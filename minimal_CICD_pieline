@@ -1,0 +1,57 @@
+1. Branching Strategy:
+	Use the Gitflow branching strategy, which consists of two main branches: master and develop.
+	The master branch represents the production-ready code, while the develop branch is for ongoing development and integration of new features.
+	Feature branches can be created from the develop branch for implementing specific features or bug fixes.
+2. Automated Triggering of the Pipeline:
+	Configure a Jenkins pipeline job to monitor the develop branch for changes.
+	Set up a webhook or polling mechanism to trigger the pipeline whenever new commits are pushed to the develop branch.
+	The pipeline can include stages such as building, testing, packaging, and publishing artifacts.
+3. Manual Approval Workflow for Deployment:
+	Set up a separate Jenkins pipeline job or stage specifically for deployment.
+	After the code has been built, tested, and packaged successfully, trigger the deployment pipeline.
+	Add a manual approval step using Jenkins' input step or a similar mechanism.
+	Only after the manual approval is granted, proceed with the deployment process.
+	The deployment stage should include steps like containerization, publishing Docker images, and deploying to a target environment such as Kubernetes.
+4. Directory Structure:
+	Use the following directory structure as a reference:
+
+my-app/
+├── src/
+├── pom.xml
+├── Dockerfile
+├── Jenkinsfile
+└── helm/
+
+5. Tools Used:
+	Git: Version control system to manage source code and branches.
+	Jenkins: Automation server to orchestrate the CI/CD pipeline.
+	Maven or Gradle: Build tools for building the Java Spring Boot application.
+	Docker: Containerization platform for packaging the application.
+	Kubernetes: Container orchestration platform for deployments.
+
+                  ┌────────────────────────────────────┐
+  Code Repository │                                    │
+   (Git)          │          Trigger Pipeline           │
+                  │                                    ▼
+                  │     ┌─────────────┐      ┌────────────────┐
+                  │     │    Build    │      │      Test      │
+                  │     └─────────────┘      └────────────────┘
+                  │             │                   │
+                  │             │                   │
+                  │     ┌─────────────┐      ┌────────────────┐
+                  │     │   Package   │      │  Publish Art   │
+                  │     └─────────────┘      └────────────────┘
+                  │             │                   │
+                  │             │                   │
+                  │     ┌─────────────┐      ┌────────────────┐
+                  │     │    Deploy   │      │  Manual Approval │
+                  │     └─────────────┘      └────────────────┘
+                  │             │                   │
+                  │             │                   │
+                  │     ┌─────────────┐      ┌────────────────┐
+                  │     │   Cleanup   │      │    Notification  │
+                  │     └─────────────┘      └────────────────┘
+                  │                                    │
+                  └────────────────────────────────────┘
+
+

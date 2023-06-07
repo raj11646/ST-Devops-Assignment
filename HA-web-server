@@ -1,0 +1,18 @@
+A minimal high-availability web server architecture typically consists of multiple components working together to ensure uninterrupted service even in the face of infrastructure failures. Here's an overview of the architecture and the mechanisms used to handle such failures:
+
+Load Balancer: 
+	The architecture employs a load balancer as the entry point for incoming requests. It distributes the incoming traffic across multiple web server instances to balance the load and improve performance. In the event of a failure of one web server, the load balancer automatically routes traffic to the remaining available servers.
+Web Server Cluster: 
+	The architecture utilizes a cluster of web servers running identical copies of the web application. The cluster typically comprises multiple instances running on separate physical or virtual machines. Each web server handles incoming requests, processes them, and serves the responses. The web servers communicate with a shared database and/or shared file storage to ensure data consistency across instances.
+Database Replication: 
+	To handle database failures, the architecture incorporates database replication. This involves maintaining multiple copies of the database across multiple servers. One server acts as the primary (master) database, handling write operations, while the other servers serve as replicas (slaves) that replicate data from the primary. If the primary database fails, one of the replicas can be promoted as the new primary, ensuring continuous database operations.
+
+File Replication: 
+	In addition to database replication, the architecture may include replication of static files or user uploads. This replication ensures that files are stored redundantly across multiple servers, preventing data loss in the event of a server failure. File replication mechanisms can include file synchronization tools or distributed file systems.
+Monitoring and Health Checks: 
+	The architecture incorporates monitoring and health check mechanisms to continuously monitor the health and availability of each component. These mechanisms can use various techniques, such as periodic pinging of servers, checking response times, or verifying the integrity of the data. If a server or component fails the health check, it is automatically taken out of the load balancer rotation until it becomes healthy again.
+Failover and Auto-Scaling: 
+	To handle infrastructure failures, the architecture incorporates failover mechanisms. If a web server instance or database server becomes unresponsive or fails, the load balancer automatically redirects traffic to the remaining healthy servers. This seamless failover ensures that the application remains available even during failures. Additionally, the architecture may also include auto-scaling capabilities to dynamically adjust the number of web server instances based on the incoming traffic load, further enhancing availability and performance.
+
+By combining these components and mechanisms, a minimal high-availability web server architecture can effectively handle infrastructure failures. It ensures that even if one or more components fail, the system can continue serving requests without interruptions or minimal downtime, providing a reliable and highly available web service to users.
+
