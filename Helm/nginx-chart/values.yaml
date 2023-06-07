@@ -1,0 +1,19 @@
+nginx:
+  image:
+    repository: nginx
+    tag: stable
+
+  replicaCount: 1
+
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+
+  ingress:
+    enabled: true
+    host: your-hostname.com
+
+  enableTLS: true
+
