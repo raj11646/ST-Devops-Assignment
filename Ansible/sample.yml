@@ -1,0 +1,52 @@
+---
+- name: Install Prometheus Node Exporter on Ubuntu
+  hosts: ubuntu_vms
+  become: true
+
+  vars:
+    node_exporter_version: "0.19.0"  # Specify the desired version of Node Exporter
+    username: "your_username"       # Specify the username for SSH connection
+    password: "your_password"       # Specify the password for SSH connection
+
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: ["curl"]
+        state: present
+
+    - name: Download Node Exporter
+      shell: |
+        curl -LO "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+      register: download_output
+      changed_when: download_output.stdout != ""
+
+    - name: Extract Node Exporter archive
+      shell: |
+        tar xvf "node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+      args:
+        chdir: "{{ inventory_dir }}"
+
+    - name: Copy Node Exporter binaries
+      copy:
+        src: "node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+        dest: "/usr/local/bin/"
+        mode: "0755"
+
+    - name: Create Node Exporter systemd service
+      template:
+        src: "node_exporter.service.j2"
+        dest: "/etc/systemd/system/node_exporter.service"
+      notify:
+        - Restart Node Exporter
+
+    - name: Start Node Exporter service
+      systemd:
+        name: node_exporter
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart Node Exporter
+      systemd:
+        name: node_exporter
+        state: restarted
